@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="asteroid_name_text_size">16sp</dimen>
+    <dimen name="asteroid_date_text_size">14sp</dimen>
+    <dimen name="asteroid_item_margin">8dp</dimen>
+</resources>

@@ -1,14 +1,15 @@
 package com.udacity.asteroidradar.api
 
-import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.domain.models.Asteroid
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.api.data.AsteroidResponse
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Calendar
+import java.util.Locale
 
-fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
-    val nearEarthObjectsJson = jsonResult.getJSONObject("near_earth_objects")
+fun parseAsteroidsJsonResult(jsonResult: AsteroidResponse): ArrayList<Asteroid> {
+    val nearEarthObjectsJson = JSONObject(jsonResult.near_earth_objects)
 
     val asteroidList = ArrayList<Asteroid>()
 
@@ -34,8 +35,10 @@ fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
                 val isPotentiallyHazardous = asteroidJson
                     .getBoolean("is_potentially_hazardous_asteroid")
 
-                val asteroid = Asteroid(id, codename, formattedDate, absoluteMagnitude,
-                    estimatedDiameter, relativeVelocity, distanceFromEarth, isPotentiallyHazardous)
+                val asteroid = Asteroid(
+                    id, codename, formattedDate, absoluteMagnitude,
+                    estimatedDiameter, relativeVelocity, distanceFromEarth, isPotentiallyHazardous
+                )
                 asteroidList.add(asteroid)
             }
         }
