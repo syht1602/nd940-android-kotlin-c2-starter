@@ -128,7 +128,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
         clearListAsteroid()
-        val startDate = getToday()
+        val startDate = getNextNumberOfDate(1) // Start date will not include today for week view -> Fixed by commented of the mentor
         val endDate = getNextNumberOfDate(DEFAULT_END_DATE_DAYS)
         val weekAsteroid = asteroidDao.getWeekAsteroid(startDate, endDate)
         _asteroidData.value = weekAsteroid

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--asteroid_item-->
+<?xml version="1.0" encoding="utf-8"?><!--asteroid_item-->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -48,13 +48,13 @@
             statusIcon="@{asteroid.isPotentiallyHazardous}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:importantForAccessibility="no"
             android:src="@drawable/ic_status_normal"
             app:layout_constraintBottom_toBottomOf="@id/tvAsteroidDate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvAsteroidName" />
+            app:layout_constraintTop_toTopOf="@id/tvAsteroidName"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

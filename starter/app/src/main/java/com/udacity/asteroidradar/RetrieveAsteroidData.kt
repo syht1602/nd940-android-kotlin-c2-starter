@@ -24,11 +24,12 @@ class RetrieveAsteroidData(context: Context, params: WorkerParameters) :
     }
 
     private suspend fun retrieveAsteroidData() {
-        val nextWeekDay = Utils.getNextNumberOfDate(DEFAULT_END_DATE_DAYS)
-        val nextWeekDayDb = asteroidDao.getSpecificDayAsteroid(nextWeekDay)
+        val startDate = Utils.getNextNumberOfDate(1) //Start date is the day after today -> Fixed by commented of the mentor
+        val endDate = Utils.getNextNumberOfDate(DEFAULT_END_DATE_DAYS)
+        val nextWeekDayDb = asteroidDao.getSpecificDayAsteroid(endDate)
         if (nextWeekDayDb.isNotEmpty()) {
             val asteroidResult =
-                apiClient.getAsteroids(nextWeekDay, nextWeekDay, Constants.API_KEY)
+                apiClient.getAsteroids(startDate, endDate, Constants.API_KEY)
             asteroidResult.body()?.let {
                 Log.d("RetrieveAsteroidData", asteroidResult.body().toString())
                 val asteroidList = parseAsteroidsJsonResult(it)
