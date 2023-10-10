@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
@@ -49,6 +48,10 @@ class MainFragment : Fragment(), MenuProvider {
                 pictureOfDay?.title?.let {
                     binding.textView.text = it
                 }
+                binding.activityMainImageOfTheDay.contentDescription = String.format(
+                    resources.getString(R.string.nasa_picture_of_day_content_description_format),
+                    pictureOfDay.title
+                )
             }
             asteroidData.observe(viewLifecycleOwner) {
                 if (it.isNotEmpty()) {

@@ -11,7 +11,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.udacity.asteroidradar.Constants.API_KEY
+import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.Constants.DEFAULT_END_DATE_DAYS
 import com.udacity.asteroidradar.RetrieveAsteroidData
 import com.udacity.asteroidradar.Utils.Companion.getNextNumberOfDate
@@ -41,7 +41,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         startWork()
-        val today = getToday()
         val nextWeekDay = getNextNumberOfDate(DEFAULT_END_DATE_DAYS)
         val nextWeekDayDb = asteroidDao.getSpecificDayAsteroid(nextWeekDay)
         viewModelScope.launch {
@@ -57,7 +56,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun startWork() {
         val retrieveDataConstraints =
             Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
-                .setRequiresCharging(true).build()
+                .setRequiresCharging(true)
+                .setRequiresBatteryNotLow(true)
+                .build()
         val workRequest =
             PeriodicWorkRequestBuilder<RetrieveAsteroidData>(1, TimeUnit.DAYS).setConstraints(
                 retrieveDataConstraints
@@ -69,7 +70,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private suspend fun getPictureOfDay() {
         try {
-            val pictureOfDayResult = apiClient.getPictureOfDay(API_KEY)
+            val pictureOfDayResult = apiClient.getPictureOfDay(BuildConfig.API_KEY)
             if (pictureOfDayResult.isSuccessful) {
                 _pictureOfDay.value = pictureOfDayResult.body()
                 Log.d(TAG, pictureOfDayResult.body().toString())
@@ -86,11 +87,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val nextWeekDay = getNextNumberOfDate(DEFAULT_END_DATE_DAYS)
 
         try {
-            val asteroidResult = apiClient.getAsteroids(today, nextWeekDay, API_KEY)
+            val asteroidResult = apiClient.getAsteroids(today, nextWeekDay, BuildConfig.API_KEY)
             Log.d(TAG, "asteroidList from api: ${asteroidResult.body().toString()}")
             asteroidResult.body()?.let {
                 val asteroidList = parseAsteroidsJsonResult(it)
-                Log.d(TAG, "asteroidList from DB: $asteroidList")
                 if (asteroidList.isNotEmpty()) {
                     viewModelScope.launch {
                         asteroidDao.insertAll(asteroidList)
@@ -109,6 +109,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
         clearListAsteroid()
         val asteroidList = asteroidDao.getAllAsteroids()
+        Log.d(TAG, "asteroidList from DB: $asteroidList")
         _asteroidData.value = asteroidList
         viewAsteroidStatus = ViewAsteroidStatus.VIEW_SAVED
     }
@@ -128,7 +129,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
         clearListAsteroid()
-        val startDate = getNextNumberOfDate(1) // Start date will not include today for week view -> Fixed by commented of the mentor
+        val startDate =
+            getNextNumberOfDate(1) // Start date will not include today for week view -> Fixed by commented of the mentor
         val endDate = getNextNumberOfDate(DEFAULT_END_DATE_DAYS)
         val weekAsteroid = asteroidDao.getWeekAsteroid(startDate, endDate)
         _asteroidData.value = weekAsteroid

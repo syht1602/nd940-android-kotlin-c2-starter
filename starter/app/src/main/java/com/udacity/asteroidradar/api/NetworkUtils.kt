@@ -2,6 +2,7 @@ package com.udacity.asteroidradar.api
 
 import com.udacity.asteroidradar.domain.models.Asteroid
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.Utils
 import com.udacity.asteroidradar.api.data.AsteroidResponse
 import org.json.JSONObject
 import java.text.SimpleDateFormat
